@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+    environment {
+        name = 'tugu'
+    }
+    parameters {
+        string(name: 'person')
+        booleanParam(name: 'ismale', defaultValue: true)
+        choice(name: 'city', choices:['cuttack','bbsr','banglore'] )
+    }
+    stages {
+        stage('run a commnd') {
+            steps {
+                sh '''
+                date
+                pwd
+                cat /etc/os-release
+                '''
+            }
+        }
+        stage('envirnent variable') {
+            environment {
+               username = 'priyapada'
+            }
+            steps {
+                sh 'echo "${BUILD_ID}"'
+                sh 'echo "${name}"'
+                sh 'echo "${username}"'
+            }
+        }
+        stage('parameters') {
+            steps {
+                sh 'echo "${name}"'
+                sh 'echo "${person}"'
+            }
+        }
+        stage('user input') {
+            input {
+                message "shoule we continue"
+                ok "you should"
+            }
+            steps {
+                echo 'deploy prod'
+            }
+        }
+    }
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+        }
+        success { 
+            echo 'success'
+        }
+        failure { 
+            echo 'failed'
+        }
+    }
+}
